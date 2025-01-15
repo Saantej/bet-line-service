@@ -1,0 +1,134 @@
+name: rates
+services:
+  bet-maker:
+    build:
+      context: /Users/santej/projects/rates/bet-maker
+      dockerfile: Dockerfile
+    command:
+      - sh
+      - -c
+      - ' while ! nc -z redis 6379 || ! nc -z db 5432; do sleep 1; done; uvicorn app.main:app --host 0.0.0.0 --port 8001'
+    depends_on:
+      db:
+        condition: service_started
+        required: true
+      redis:
+        condition: service_started
+        required: true
+    environment:
+      POSTGRES_DB: bets
+      POSTGRES_PASSWORD: pweb
+      POSTGRES_USER: pweb
+      PYTHONPATH: /app
+      REDIS_URL: redis://redis:6379/0
+    networks:
+      app-network: null
+    ports:
+      - mode: ingress
+        target: 8001
+        published: "8001"
+        protocol: tcp
+    stdin_open: true
+    tty: true
+    volumes:
+      - type: bind
+        source: /Users/santej/projects/rates/bet-maker
+        target: /app
+        bind:
+          create_host_path: true
+  db:
+    environment:
+      DB_NAME: bets
+      DB_PASSWORD: pweb
+      DB_USER: pweb
+      POSTGRES_DB: bets
+      POSTGRES_PASSWORD: pweb
+      POSTGRES_USER: pweb
+    image: postgres:14
+    networks:
+      app-network: null
+    ports:
+      - mode: ingress
+        target: 5432
+        published: "5434"
+        protocol: tcp
+    volumes:
+      - type: volume
+        source: db-data
+        target: /var/lib/postgresql/data
+        volume: {}
+  line-provider:
+    build:
+      context: /Users/santej/projects/rates/line-provider
+      dockerfile: Dockerfile.line-provider
+    command:
+      - sh
+      - -c
+      - ' while ! nc -z redis 6379; do sleep 1; done; uvicorn app.main:app --host 0.0.0.0 --port 8000'
+    depends_on:
+      redis:
+        condition: service_started
+        required: true
+    environment:
+      PYTHONPATH: /app
+      REDIS_URL: redis://redis:6379/0
+    networks:
+      app-network: null
+    ports:
+      - mode: ingress
+        target: 8000
+        published: "8000"
+        protocol: tcp
+    stdin_open: true
+    tty: true
+    volumes:
+      - type: bind
+        source: /Users/santej/projects/rates/line-provider
+        target: /app
+        bind:
+          create_host_path: true
+  redis:
+    image: redis:6.0
+    networks:
+      app-network: null
+    ports:
+      - mode: ingress
+        target: 6379
+        published: "6379"
+        protocol: tcp
+  tests-line-provider:
+    build:
+      context: /Users/santej/projects/rates/line-provider
+      dockerfile: Dockerfile.line-provider
+    command:
+      - sh
+      - -c
+      - ' while ! nc -z redis 6379 || ! nc -z db 5432; do sleep 1; done; pytest --maxfail=1 --disable-warnings --tb=short'
+    depends_on:
+      db:
+        condition: service_started
+        required: true
+      redis:
+        condition: service_started
+        required: true
+    environment:
+      POSTGRES_DB: bets
+      POSTGRES_PASSWORD: pweb
+      POSTGRES_USER: pweb
+      PYTHONPATH: /app
+      REDIS_URL: redis://redis:6379/0
+    networks:
+      app-network: null
+    volumes:
+      - type: bind
+        source: /Users/santej/projects/rates/line-provider
+        target: /app
+        bind:
+          create_host_path: true
+networks:
+  app-network:
+    name: rates_app-network
+    driver: bridge
+volumes:
+  db-data:
+    name: rates_db-data

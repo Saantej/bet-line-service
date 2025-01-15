@@ -1,0 +1,44 @@
+# Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.sqlite3
+
+# Virtual Environment
+venv/
+.env
+
+# Docker
+*.log
+*.pid
+*.gz
+*.json
+.dockerignore
+
+# Byte-compiled / optimized / DLL files
+*.egg
+*.egg-info/
+*.eggs/
+dist/
+build/
+*.so
+
+# Pytest
+.cache/
+.tox/
+.pytest_cache/
+
+# Alembic
+migrations/
+alembic/versions/*
+
+# Editor specific
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# System specific
+.DS_Store
+Thumbs.db
