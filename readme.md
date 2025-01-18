@@ -21,12 +21,13 @@
 
 2. Создайте `.env` файл в корне репозитория с содержимым:
    ```env
-   DB_USER=your_db_user
-   DB_PASSWORD=your_db_password
-   DB_NAME=your_db_name
-   DB_HOST=db
    DB_PORT=5432
+   DB_USER=pweb
+   DB_PASSWORD=pweb
+   DB_NAME=betmaker
+   DB_HOST=db
    REDIS_URL=redis://redis:6379/0
+
    ```
 
 3. Запустите оба сервиса:
