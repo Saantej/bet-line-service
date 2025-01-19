@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from typing import List
 from datetime import datetime
 from .services import EventService
-from .models import Event, UpdateEventResponse, EventResponse, EventCreateRequest
+from .schemas import Event, UpdateEventResponse, EventResponse, EventCreateRequest
 from .enums import EventStatus
 
 router = APIRouter()

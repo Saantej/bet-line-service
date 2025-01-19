@@ -15,8 +15,8 @@
 
 1. Клонируйте репозиторий:
    ```bash
-   git clone https://your-repository-url.git
-   cd your-repository-folder
+   git clone git@github.com:Saantej/bet-line-service.git
+   cd bet-line-service
    ```
 
 2. Создайте `.env` файл в корне репозитория с содержимым:

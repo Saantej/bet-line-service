@@ -1,7 +1,7 @@
 from typing import List, Optional
 from uuid import uuid4
 from datetime import datetime, timezone
-from .models import Event
+from .schemas import Event
 from .enums import EventStatus
 
 class EventService:
